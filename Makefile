@@ -1,3 +1,5 @@
+all: detof
+
 update:
 	git pull --rebase
 
