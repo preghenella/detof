@@ -1,2 +1,2 @@
 all:
-	g++ detof.cpp -o detof
+	g++ -std=c++0x detof.cpp -o detof
