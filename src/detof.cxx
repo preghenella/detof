@@ -1,3 +1,4 @@
+#include <boost/program_options.hpp>
 #include <iostream>
 #include <fstream>
 #include <cstdint>
@@ -34,20 +35,47 @@ int wordn = 2;
 
 uint32_t current = 0;
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
+
+  std::string inFileName;
   
-  if (argc < 2) {
-    printf("usage: ./detof [filename] [word] \n");
+  /** define arguments **/
+  namespace po = boost::program_options;
+  po::options_description desc("Options");
+  desc.add_options()
+    ("help", "Print help messages")
+    ("input,i", po::value<std::string>(&inFileName)->required(), "Input data file")
+    ("word,w",  po::value<int>(&wordn)->default_value(2), "Word where to find the data")
+    ;
+  /** positional arguments **/
+  po::positional_options_description p;
+  p.add("input", 1);
+  p.add("word", 2);
+
+  po::variables_map vm;
+  //  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+  
+  /** process arguments **/
+  try {
+    /** help **/
+    if (vm.count("help")) {
+      std::cout << desc << std::endl;
+      return 1;
+    }
+    po::notify(vm);
+  }
+  catch(std::exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+    std::cout << desc << std::endl;
     return 1;
   }
-  if (argc == 3)
-    wordn = atoi(argv[2]);
   
   std::ifstream is;
-  is.open(argv[1], std::fstream::binary);
+  is.open(inFileName.c_str(), std::fstream::binary);
   if (!is.is_open()) {
-    printf("cannot open %s \n", argv[1]);
+    std::cerr << "cannot open " << inFileName << std::endl;
     return 1;
   }
 
