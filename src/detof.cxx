@@ -88,8 +88,8 @@ dechk()
 
   char name[2] = {'a', 'b'};
   
-  uint32_t enabled = DRMSummaryData.DRMStatusHeader2.SlotEnableMask;
-  uint32_t participating = DRMSummaryData.DRMStatusHeader1.ParticipatingSlotID;
+  auto enabled = DRMSummaryData.DRMStatusHeader2.SlotEnableMask;
+  auto participating = DRMSummaryData.DRMStatusHeader1.ParticipatingSlotID;
 
   if (participating != enabled) {
 #if CHECK_VERBOSE
